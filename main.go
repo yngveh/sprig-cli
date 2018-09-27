@@ -29,20 +29,30 @@ func init() {
 
 	var (
 		source *os.File
-		err    error
 	)
 
 	if *tmplFlag == "-" {
 		source = os.Stdin
+		defer source.Close()
 	} else {
-		source, err = os.Open(*tmplFlag)
-		if err != nil {
-			panic(err)
+		files := strings.Split(*tmplFlag, ",")
+		sources := make([]*os.File, len(files))
+		for idx, file := range files {
+			source, err := os.Open(file)
+			if err != nil {
+				panic(err)
+			}
+			sources[idx] = source
+			defer source.Close()
+		}
+		for _, source := range sources {
+			aTmpl, err := ioutil.ReadAll(source)
+			if err != nil {
+				panic(err)
+			}
+			tmpl = append(tmpl, aTmpl...)
 		}
 	}
-	defer source.Close()
-
-	tmpl, err = ioutil.ReadAll(source)
 
 	if *datafileFlag != "" {
 		files := strings.Split(*datafileFlag, ",")
