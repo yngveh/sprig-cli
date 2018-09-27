@@ -2,11 +2,13 @@ package main
 
 import (
 	"flag"
-	"os"
 	"io/ioutil"
+	"os"
+	"strings"
 	"text/template"
-	"gopkg.in/yaml.v2"
+
 	"github.com/Masterminds/sprig"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -18,7 +20,6 @@ var (
 )
 
 func init() {
-
 	flag.Parse()
 
 	stat, _ := os.Stdin.Stat()
@@ -28,34 +29,89 @@ func init() {
 
 	var (
 		source *os.File
-		err    error
 	)
 
 	if *tmplFlag == "-" {
 		source = os.Stdin
+		defer source.Close()
 	} else {
-		source, err = os.Open(*tmplFlag)
-		if err != nil {
-			panic(err)
+		files := strings.Split(*tmplFlag, ",")
+		sources := make([]*os.File, len(files))
+		for idx, file := range files {
+			source, err := os.Open(file)
+			if err != nil {
+				panic(err)
+			}
+			sources[idx] = source
+			defer source.Close()
+		}
+		for _, source := range sources {
+			aTmpl, err := ioutil.ReadAll(source)
+			if err != nil {
+				panic(err)
+			}
+			tmpl = append(tmpl, aTmpl...)
 		}
 	}
-	defer source.Close()
-
-	tmpl, err = ioutil.ReadAll(source)
 
 	if *datafileFlag != "" {
-
-		dataBytes, err := ioutil.ReadFile(*datafileFlag)
+		files := strings.Split(*datafileFlag, ",")
+		out, err := parseAll(files)
 		if err != nil {
 			panic(err)
 		}
+		data = out
+	}
+}
 
-		err = yaml.Unmarshal(dataBytes, &data)
+func parseAll(filepaths []string) (map[interface{}]interface{}, error) {
+	maps := make([]map[interface{}]interface{}, len(filepaths))
+
+	for idx, filepath := range filepaths {
+		d, err := parse(filepath)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
+		maps[idx] = d
 	}
 
+	output := make(map[interface{}]interface{})
+	for _, d := range maps {
+		output = merge(output, d)
+	}
+
+	return output, nil
+}
+
+func parse(filepath string) (map[interface{}]interface{}, error) {
+	var d map[interface{}]interface{}
+
+	dataBytes, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(dataBytes, &d)
+	if err != nil {
+		return nil, err
+	}
+
+	return d, nil
+}
+
+// merge takes two maps and merges them. on collision b overwrites a
+func merge(a, b map[interface{}]interface{}) map[interface{}]interface{} {
+	output := make(map[interface{}]interface{})
+
+	for k, v := range a {
+		output[k] = v
+	}
+
+	for k, v := range b {
+		output[k] = v
+	}
+
+	return output
 }
 
 func main() {
