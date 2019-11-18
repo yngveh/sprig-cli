@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"flag"
 	"io/ioutil"
 	"os"
@@ -16,7 +17,7 @@ var (
 	tmplFlag     = flag.String("tmpl", "", "Template")
 
 	tmpl []byte
-	data map[interface{}]interface{}
+	data map[string]interface{}
 )
 
 func init() {
@@ -64,8 +65,8 @@ func init() {
 	}
 }
 
-func parseAll(filepaths []string) (map[interface{}]interface{}, error) {
-	maps := make([]map[interface{}]interface{}, len(filepaths))
+func parseAll(filepaths []string) (map[string]interface{}, error) {
+	maps := make([]map[string]interface{}, len(filepaths))
 
 	for idx, filepath := range filepaths {
 		d, err := parse(filepath)
@@ -75,7 +76,7 @@ func parseAll(filepaths []string) (map[interface{}]interface{}, error) {
 		maps[idx] = d
 	}
 
-	output := make(map[interface{}]interface{})
+	output := make(map[string]interface{})
 	for _, d := range maps {
 		output = merge(output, d)
 	}
@@ -83,8 +84,8 @@ func parseAll(filepaths []string) (map[interface{}]interface{}, error) {
 	return output, nil
 }
 
-func parse(filepath string) (map[interface{}]interface{}, error) {
-	var d map[interface{}]interface{}
+func parse(filepath string) (map[string]interface{}, error) {
+	var d map[string]interface{}
 
 	dataBytes, err := ioutil.ReadFile(filepath)
 	if err != nil {
@@ -96,12 +97,77 @@ func parse(filepath string) (map[interface{}]interface{}, error) {
 		return nil, err
 	}
 
+	d, err = CastKeysToStrings(d)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return d, nil
 }
 
+func CastKeysToStrings(s interface{}) (map[string]interface{}, error) {
+	new := map[string]interface{}{}
+	switch src := s.(type) {
+	case map[interface{}]interface{}:
+		for k, v := range src {
+			var str_k string
+			switch typed_k := k.(type) {
+			case string:
+				str_k = typed_k
+			default:
+				return nil, fmt.Errorf("unexpected type of key in map: expected string, got %T: value=%v, map=%v", typed_k, typed_k, src)
+			}
+
+			casted_v, err := recursivelyStringifyMapKey(v)
+			if err != nil {
+				return nil, err
+			}
+
+			new[str_k] = casted_v
+		}
+	case map[string]interface{}:
+		for k, v := range src {
+			casted_v, err := recursivelyStringifyMapKey(v)
+			if err != nil {
+				return nil, err
+			}
+
+			new[k] = casted_v
+		}
+	}
+	return new, nil
+}
+
+func recursivelyStringifyMapKey(v interface{}) (interface{}, error) {
+	var casted_v interface{}
+	switch typed_v := v.(type) {
+	case map[interface{}]interface{}, map[string]interface{}:
+		tmp, err := CastKeysToStrings(typed_v)
+		if err != nil {
+			return nil, err
+		}
+		casted_v = tmp
+	case []interface{}:
+		a := []interface{}{}
+		for i := range typed_v {
+			res, err := recursivelyStringifyMapKey(typed_v[i])
+			if err != nil {
+				return nil, err
+			}
+			a = append(a, res)
+		}
+		casted_v = a
+	default:
+		casted_v = typed_v
+	}
+	return casted_v, nil
+}
+
+
 // merge takes two maps and merges them. on collision b overwrites a
-func merge(a, b map[interface{}]interface{}) map[interface{}]interface{} {
-	output := make(map[interface{}]interface{})
+func merge(a, b map[string]interface{}) map[string]interface{} {
+	output := make(map[string]interface{})
 
 	for k, v := range a {
 		output[k] = v
