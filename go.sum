@@ -1,0 +1,16 @@
+github.com/Masterminds/semver v1.4.0 h1:h9TTGlRMRjil1wsQTRj3+COyXMngVsuK6HMph+Ma7ds=
+github.com/Masterminds/semver v1.4.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
+github.com/Masterminds/sprig v2.14.0+incompatible h1:nC0fgY6y1UohQeh3PIaXh2IY54dS8JaW2JZwvJM+3ts=
+github.com/Masterminds/sprig v2.14.0+incompatible/go.mod h1:y6hNFY5UBTIWBxnzTeuNhlNS5hqE0NB0E6fgfo2Br3o=
+github.com/aokoli/goutils v1.0.1 h1:7fpzNGoJ3VA8qcrm++XEE1QUe0mIwNeLa02Nwq7RDkg=
+github.com/aokoli/goutils v1.0.1/go.mod h1:SijmP0QR8LtwsmDs8Yii5Z/S4trXFGFC2oO5g9DP+DQ=
+github.com/huandu/xstrings v0.0.0-20170908061042-d6590c0c31d1 h1:5sbhABS5wzLMXC69upO+ZpwdP3z+O9OszTijhBKLOh4=
+github.com/huandu/xstrings v0.0.0-20170908061042-d6590c0c31d1/go.mod h1:4qWG/gcEcfX4z/mBDHJ++3ReCw9ibxbsNJbcucJdbSo=
+github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab h1:k/Biv+LJL35wkk0Hveko1nj7as4tSHkHdZaNlzn/gcQ=
+github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
+github.com/satori/go.uuid v1.1.0 h1:B9KXyj+GzIpJbV7gmr873NsY6zpbxNy24CBtGrk7jHo=
+github.com/satori/go.uuid v1.1.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
+golang.org/x/crypto v0.0.0-20171128174809-e8f229864d71 h1:8Ob8yq3a0iethMoyEVBu8kPl2lcFPHIojA1M3xKMkRw=
+golang.org/x/crypto v0.0.0-20171128174809-e8f229864d71/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
+gopkg.in/yaml.v2 v2.0.0-20171116090243-287cf08546ab h1:yZ6iByf7GKeJ3gsd1Dr/xaj1DyJ//wxKX1Cdh8LhoAw=
+gopkg.in/yaml.v2 v2.0.0-20171116090243-287cf08546ab/go.mod h1:JAlM8MvJe8wmxCU4Bli9HhUf9+ttbYbLASfIpnQbh74=
