@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"os"
 	"io/ioutil"
+	"os"
 	"text/template"
+
+	"github.com/Masterminds/sprig/v3"
 	"gopkg.in/yaml.v2"
-	"github.com/Masterminds/sprig"
 )
 
 var (
