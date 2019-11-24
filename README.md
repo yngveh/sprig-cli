@@ -1,4 +1,4 @@
-# Strig command line tool
+# Sprig command line tool
 
 Command line for [Sprig](https://github.com/Masterminds/sprig)
 

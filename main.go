@@ -60,7 +60,9 @@ func init() {
 }
 
 func main() {
+
 	t := template.Must(template.New(*tmplFlag).Funcs(sprig.TxtFuncMap()).Parse(string(tmpl)))
+
 	if err := t.Execute(os.Stdout, data); err != nil {
 		panic(err)
 	}
