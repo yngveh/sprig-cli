@@ -10,15 +10,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var (
-	datafileFlag = flag.String("data", "", "Datafile")
-	tmplFlag     = flag.String("tmpl", "", "Template")
+func main() {
 
-	tmpl []byte
-	data map[interface{}]interface{}
-)
-
-func init() {
+	datafileFlag := flag.String("data", "", "Datafile")
+	tmplFlag := flag.String("tmpl", "", "Template")
 
 	flag.Parse()
 
@@ -32,7 +27,7 @@ func init() {
 		err    error
 	)
 
-	if *tmplFlag == "-" {
+	if *tmplFlag == "" {
 		source = os.Stdin
 	} else {
 		source, err = os.Open(*tmplFlag)
@@ -40,9 +35,17 @@ func init() {
 			panic(err)
 		}
 	}
-	defer source.Close()
 
-	tmpl, err = ioutil.ReadAll(source)
+	defer func() {
+		_ = source.Close()
+	}()
+
+	tmpl, err := ioutil.ReadAll(source)
+	if err != nil {
+		panic(err)
+	}
+
+	var data map[interface{}]interface{}
 
 	if *datafileFlag != "" {
 
@@ -51,19 +54,15 @@ func init() {
 			panic(err)
 		}
 
-		err = yaml.Unmarshal(dataBytes, &data)
-		if err != nil {
+		if err = yaml.Unmarshal(dataBytes, &data); err != nil {
 			panic(err)
 		}
 	}
 
-}
+	t := template.Must(
+		template.New(*tmplFlag).Funcs(sprig.TxtFuncMap()).Parse(string(tmpl)))
 
-func main() {
-
-	t := template.Must(template.New(*tmplFlag).Funcs(sprig.TxtFuncMap()).Parse(string(tmpl)))
-
-	if err := t.Execute(os.Stdout, data); err != nil {
+	if err = t.Execute(os.Stdout, data); err != nil {
 		panic(err)
 	}
 }
