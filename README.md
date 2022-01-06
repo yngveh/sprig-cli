@@ -2,6 +2,12 @@
 
 Command line for [Sprig](https://github.com/Masterminds/sprig)
 
+## Install
+
+```bash
+go install github.com/yngveh/sprig-cli
+```
+
 ## Usage
 
 ### Template from file
