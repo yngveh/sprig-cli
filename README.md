@@ -5,7 +5,7 @@ Command line for [Sprig](https://github.com/Masterminds/sprig)
 ## Install
 
 ```bash
-go install github.com/yngveh/sprig-cli
+go install github.com/yngveh/sprig-cli@latest
 ```
 
 ## Usage
