@@ -1,31 +1,33 @@
 # Sprig command line tool
 
-Command line for [Sprig](https://github.com/Masterminds/sprig)
+Command line for [Sprig](https://github.com/Masterminds/sprig). Works with YAML and for JSON as part of YAML.
 
 ## Install
 
 ```bash
-go install github.com/yngveh/sprig-cli@latest
+go install github.com/ksa-real/sprig-cli@latest
 ```
 
 ## Usage
 
-### Template from file
+### Data from argument
 
 ```bash
-sprig-cli -tmpl /path/to/template.tpl -data /path/to/data.yaml
+sprig-cli -t /path/to/template -i /path/to/data.yaml
+sprig-cli "{{ .a }}" "a: vvv" 
+sprig-cli '{{ .a.b }}' '{ a: { b: "ccc" }}'
+sprig-cli '{{ .a.b }}' -i /path/to/data.yaml
 ```
 
-### Template from stdin
+### Data from stdin
 
 ```bash
-echo "{{ uuidv4 }}" | sprig-cli
-echo "{{ .root.key1 }}" | spring-cli -data test/my-data.yaml
+sprig-cli '{{ uuidv4 }}'
+cat test/my-data.yaml | spring-cli "{{ .root.key1 }}" 
 ```
 
 ## Build
-
 ```bash
-make
+go build
 ```
 
