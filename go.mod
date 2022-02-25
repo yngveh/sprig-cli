@@ -1,9 +1,10 @@
-module github.com/yngveh/sprig-cli
+module github.com/ksa-real/sprig-cli
 
 go 1.17
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.1
+	github.com/jessevdk/go-flags v1.5.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -18,4 +19,5 @@ require (
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904 // indirect
+	golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4 // indirect
 )
